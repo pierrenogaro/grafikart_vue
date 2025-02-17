@@ -11,7 +11,7 @@
   <div v-if="todos.length === 0"> Vous n'avez pas de tache à faire</div>
   <div v-else>
     <ul>
-      <li v-for="todo in todos"
+      <li v-for="todo in sortedTodos"
       :key="todo.date"
       :class="{completed : todo.completed }"
       >
@@ -26,12 +26,15 @@
         <input type="checkbox" v-model="hideCompleted">
         Masquer les tâches complétées
       </label>
+      <p v-if="remainingTodos > 0">
+        {{remainingTodos}} tâche{{remainingTodos > 1 ? 's' :''}} à faire
+      </p>
     </div>
   </div>
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {computed, ref} from "vue";
 const newTodo = ref([])
 const hideCompleted = ref(false);
 const todos = ref([{
@@ -52,9 +55,20 @@ const addTodo = () => {
   newTodo.value = ''
 }
 
-const sortedTodos = () => {
-  return todos.value.toSorted((a, b) => a.completed > b.completed ? 1 : -1)
-}
+const sortedTodos =  computed(() => {
+  const sortedTodos = todos.value.toSorted((a, b) => a.completed > b.completed ? 1 : -1);
+
+  if (hideCompleted.value === true) {
+    return sortedTodos.filter(t => t.completed === false);
+  }
+
+  return sortedTodos;
+})
+
+const remainingTodos = computed(() => {
+  return todos.value.filter ( t => t.completed === false).length
+})
+
 
 </script>
 
