@@ -1,4 +1,25 @@
 <template>
+  <layout>
+    <template v-slot:header>
+      en tete
+
+    </template>
+
+    <template v-slot:aside>
+     sidebar
+
+    </template>
+
+    <template v-slot:main>
+     main
+
+    </template>
+
+    <template v-slot:footer>
+     footer
+
+    </template>
+  </layout>
   <form action="" @submit.prevent="addTodo">
     <fieldset role="group">
       <input type="text"
@@ -16,8 +37,9 @@
       :class="{completed : todo.completed }"
       >
         <label>
-          <input type="checkbox" v-model="todo.completed">
-          {{todo.title}}
+          <Checkbox :label="todo.title"
+            v-model="todo.completed"
+          />
         </label>
       </li>
     </ul>
@@ -30,11 +52,16 @@
         {{remainingTodos}} tâche{{remainingTodos > 1 ? 's' :''}} à faire
       </p>
     </div>
+    <Checkbox :label="'Bonjour'"/>
   </div>
 </template>
 
 <script setup>
 import {computed, ref} from "vue";
+import Checkbox from "@/Checkbox.vue";
+import Button from "@/Button.vue"
+import Layout from "@/Layout.vue";
+
 const newTodo = ref([])
 const hideCompleted = ref(false);
 const todos = ref([{
