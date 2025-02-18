@@ -20,6 +20,8 @@
 
     </template>
   </layout>
+  <button @click="showTimer = !showTimer">Afficher / Masquer</button>
+  <Timer v-if="showTimer"></Timer>
   <form action="" @submit.prevent="addTodo">
     <fieldset role="group">
       <input type="text"
@@ -57,22 +59,22 @@
 </template>
 
 <script setup>
-import {computed, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import Checkbox from "@/Checkbox.vue";
 import Button from "@/Button.vue"
 import Layout from "@/Layout.vue";
+import Timer from "@/Timer.vue";
 
 const newTodo = ref([])
 const hideCompleted = ref(false);
-const todos = ref([{
-  title : 'Tache de test',
-  completed: true,
-  date: 1,
-}, {
-    title : 'Tache à faire',
-    completed: false,
-    date: 2,
-  }])
+const showTimer = ref(true);
+const todos = ref([])
+onMounted(() => {
+  fetch('https://jsonplaceholder.typicode.com/todos')
+      .then(r => r.json())
+      .then(v => todos.value = v.map(todo => ({...todo, date: todo.id})))
+
+})
 const addTodo = () => {
   todos.value.push({
     title : newTodo.value,
